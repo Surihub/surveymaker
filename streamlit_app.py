@@ -40,7 +40,7 @@ if not df.empty:
     
     # 응답자 총합
     total_respondents = len(df)
-    st.write(f"**응답자 총합:** {total_respondents}명, **현재 시간:** {current_time_kst}")
+    st.write(f"**{total_respondents}명**의 응답이 모였네요! **현재 시간:** {current_time_kst}")
     
     # Matplotlib을 이용한 원그래프
     # st.subheader("응답자 현황: 원그래프")
