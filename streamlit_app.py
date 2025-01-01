@@ -1,8 +1,5 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import koreanize_matplotlib
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
 import pytz
@@ -15,48 +12,50 @@ st.info("**동계 1정 연수 : 디지털 기반 업무의 실제 강의**를 �
 # 구글 폼 삽입
 iframe_url = 'https://forms.gle/6MCgNgMEQXRPkW9v8'
 st.components.v1.iframe(src=iframe_url, width=None, height=500, scrolling=True)
-
-# 신청자 현황 대시보드
 st.subheader("공유된 응답 대시보드")
-# 구글 시트 연결
-conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 한국 시간 (KST) 설정
-kst = pytz.timezone("Asia/Seoul")
-current_time_kst = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S")
+# 박스 형태로 묶음
+with st.expander("공유된 응답 살펴보기"):
+    # 구글 시트 연결
+    conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 새로고침 버튼 추가
-if st.button("🔄 데이터 새로고침"):
-    st.cache_data.clear()  # 페이지를 다시 실행하여 데이터를 갱신
+    # 한국 시간 (KST) 설정
+    kst = pytz.timezone("Asia/Seoul")
+    current_time_kst = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S")
 
-# 데이터 읽기
-df = conn.read()
+    # 새로고침 버튼 추가
+    if st.button("🔄 데이터 새로고침"):
+        st.cache_data.clear()
 
+    # 데이터 읽기
+    df = conn.read()
 
-# 신청 날짜 데이터 처리 및 시각화
-if not df.empty:
-    data = df.iloc[:, 1].str.split(', ').explode()
-    response_count = data.value_counts()
-    
-    # 응답자 총합
-    total_respondents = len(df)
-    st.write(f"**{total_respondents}명**의 응답이 모였네요! **현재 시간:** {current_time_kst}")
-    
-    # Matplotlib을 이용한 원그래프
-    # st.subheader("응답자 현황: 원그래프")
-    
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.pie(
-        response_count.values, 
-        labels=response_count.index, 
-        autopct='%1.1f%%', 
-        startangle=90, 
-        colors=sns.color_palette("pastel"),
-        textprops={'fontsize': 12}
-    )
-    # ax.set_title("응답자 현황", fontsize=16, fontweight="bold")
-    
-    # Streamlit에 그래프 표시
-    st.pyplot(fig)
-else:
-    st.warning("현재 신청 데이터가 없습니다.")
+    # 신청 날짜 데이터 처리 및 시각화
+    if not df.empty:
+        data = df.iloc[:, 1].str.split(', ').explode()
+
+        # 응답 수 계산
+        # 응답 수 계산
+        response_count = data.value_counts()
+
+        # 응답 데이터를 시각화하기 위해 데이터프레임으로 변환
+        response_df = response_count.reset_index()
+        response_df.columns = ["응답 내용", "응답 수"]
+
+        # 응답 수 기준으로 내림차순 정렬
+        response_df = response_df.sort_values(by="응답 수", ascending=False)
+        st.write(response_df)
+        # 응답자 총합
+        total_respondents = len(df)
+        st.write(f"**{total_respondents}명**의 응답이 모였네요! **현재 시간:** {current_time_kst}")
+
+        # Streamlit 바 차트로 시각화
+        st.subheader("1. 적용하고 싶은 분야")
+        st.bar_chart(response_df.set_index("응답 내용")["응답 수"], color="#ffaa00", horizontal=True)
+        st.subheader("2. 실천 아이디어")
+        st.write(df.iloc[:, 2])
+        st.subheader("3. 프롬프트 공유 및 설명")
+        st.write(df.iloc[:, 3].dropna())
+
+    else:
+        st.warning("현재 신청 데이터가 없습니다.")
