@@ -1,4 +1,5 @@
 streamlit
 st-gsheets-connection
 seaborn
-koreanize_matplotlib
+koreanize-matplotlib
+matplotlib
