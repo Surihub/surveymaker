@@ -47,13 +47,13 @@ try:
         st.success(f"**{total_respondents}명**의 응답이 모였습니다! 🕒 **현재 시간:** {current_time_kst}")
 
         st.subheader("1️⃣ 적용하고 싶은 분야")
-        st.bar_chart(response_df.set_index("응답 내용")["응답 수"])
+        st.bar_chart(response_df.set_index("응답 내용")["응답 수"], color="#ffaa00", horizontal=True)
 
         st.subheader("2️⃣ 실천 아이디어")
-        st.write(df.iloc[:, 2].dropna())
+        st.dataframe(df.iloc[:, 2].dropna(), hide_index=True, use_container_width=True)
 
         st.subheader("3️⃣ 프롬프트 공유 및 설명")
-        st.write(df.iloc[:, 3].dropna())
+        st.dataframe(df.iloc[:, 3].dropna())
     else:
         st.warning("현재 응답 데이터가 없습니다. 😔")
 
