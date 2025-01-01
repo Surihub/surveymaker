@@ -8,7 +8,7 @@ from datetime import datetime
 import pytz
 
 # Streamlit 페이지 설정
-st.set_page_config(page_title="행사 신청", page_icon="📃")
+st.set_page_config(page_title="설문응답공유", page_icon="📃")
 st.title("📃 디지털 기반 업무 적용 실천하기!")
 st.info("**동계 1정 연수 : 디지털 기반 업무의 실제 강의**를 들으신 후, 아이디어를 공유하는 장입니다. 선생님들의 창의적인 아이디어를 서로 공유해주세요! 다른 선생님들의 아이디어를 보고 개선시키는 것도 가능합니다:)")
 
