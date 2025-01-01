@@ -42,7 +42,7 @@ with st.expander("공유된 응답 살펴보기"):
 
             # 응답 수 기준으로 내림차순 정렬
             response_df = response_df.sort_values(by="응답 수", ascending=False)
-            st.write(response_df)
+            # st.write(response_df)
 
             # 응답자 총합
             total_respondents = len(df)
